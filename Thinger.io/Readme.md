@@ -1,0 +1,1 @@
+using Thinger.io cloud to connect the board to it and througth that turn the built-in LED on and off.

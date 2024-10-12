@@ -1,0 +1,252 @@
+[
+    {
+        "id": "9204a9298c21da12",
+        "type": "tab",
+        "label": "project",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "8fc2f061fdf33610",
+        "type": "ui_template",
+        "z": "9204a9298c21da12",
+        "group": "96bce99e1c099c7a",
+        "name": "",
+        "order": 1,
+        "width": "0",
+        "height": "0",
+        "format": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>My p5.js Animation</title>\n    <!-- Include the p5.js library -->\n    <script src=\"https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js\"></script>\n    <!-- Link your custom CSS file (if needed) -->\n    <!--link rel=\"stylesheet\" href=\"style.css\"-->\n</head>\n<body>\n    <!-- Create a container for your p5.js sketch -->\n    <div id=\"sketch-container\"></div>\n\n    <!-- Include your p5.js sketch -->\n    <script>        \n    let angle = \"\";\n    let distance = \"\";\n    let data = \"\";\n    let noObject;\n    let pixsDistance;\n    let iAngle, iDistance;\n    //setInterval(receiveData, 30);\n    function setup() {\n        createCanvas(1200, 700); // ***CHANGE THIS TO YOUR SCREEN RESOLUTION***\n        smooth();\n        iAngle = 43; \n        iDistance = 21;\n        }\n    function draw() {\n            fill(98, 245, 31); // simulating motion blur and slow fade of the moving line\n            noStroke();\n            fill(0, 4);\n            rect(0, 0, width, height - height * 0.065);\n            fill(98, 245, 31); // green color\n            // calls the functions for drawing the radar\n            drawRadar();\n            drawLine();\n            drawObject();\n            drawText();\n        }\n    //function receiveData() {\n    //        angle = msg.angle;\n    //        distance = msg.distance;\n    //        iAngle = parseInt(angle,10);\n    //        iDistance = parseInt(distance,10);\n    //        draw();\n    // Update radar display based on new angle and distance\n    // Call functions to redraw radar elements\n    // ...\n   // }\n(function(scope) {\n  scope.$watch('msg', function(msg) {\n    if (msg) {\n      // Do something when msg arrives\n            iAngle = parseInt(msg.angle,10);\n            iDistance = parseInt(msg.distance,10);\n            drawLine();\n            drawObject();\n            drawText();\n    }\n  });\n})(scope);\n    function drawRadar() {\n        push();\n        translate(width / 2, height - height * 0.074); // moves the starting coordinats to new location\n        noFill();\n        strokeWeight(2);\n        stroke(98, 245, 31); // draws the arc lines\n        arc(0, 0, width - width * 0.0625, width - width * 0.0625, PI, TWO_PI);\n        arc(0, 0, width - width * 0.27, width - width * 0.27, PI, TWO_PI);\n        arc(0, 0, width - width * 0.479, width - width * 0.479, PI, TWO_PI);\n        arc(0, 0, width - width * 0.687, width - width * 0.687, PI, TWO_PI); // draws the angle lines\n        line(-width / 2, 0, width / 2, 0);\n        line(\n            0,\n            0,\n            (-width / 2) * cos(radians(30)),\n            (-width / 2) * sin(radians(30))\n        );\n        line(\n            0,\n            0,\n            (-width / 2) * cos(radians(60)),\n            (-width / 2) * sin(radians(60))\n        );\n        line(\n            0,\n            0,\n            (-width / 2) * cos(radians(90)),\n            (-width / 2) * sin(radians(90))\n        );\n        line(\n            0,\n            0,\n            (-width / 2) * cos(radians(120)),\n            (-width / 2) * sin(radians(120))\n        );\n        line(\n            0,\n            0,\n            (-width / 2) * cos(radians(150)),\n            (-width / 2) * sin(radians(150))\n        );\n        line((-width / 2) * cos(radians(30)), 0, width / 2, 0);\n        pop();\n    }\n    function drawObject() {\n        push();\n        translate(width / 2, height - height * 0.074); // moves the starting coordinats to new location\n        strokeWeight(9);\n        stroke(255, 10, 10); // red color\n        pixsDistance = iDistance * ((height - height * 0.1666) * 0.025); // covers the distance from the sensor from cm to pixels\n        // limiting the range to 40 cms\n        if (iDistance < 40) {\n            // draws the object according to the angle and the distance\n            line(\n                pixsDistance * cos(radians(iAngle)),\n                -pixsDistance * sin(radians(iAngle)),\n                (width - width * 0.505) * cos(radians(iAngle)),\n                -(width - width * 0.505) * sin(radians(iAngle))\n            );\n        }\n        pop();\n    }\n    function drawLine() {\n        push();\n        strokeWeight(9);\n        stroke(30, 250, 60);\n        translate(width / 2, height - height * 0.074); // moves the starting coordinats to new location\n        line(\n            0,\n            0,\n            (height - height * 0.12) * cos(radians(iAngle)),\n            -(height - height * 0.12) * sin(radians(iAngle))\n        ); // draws the line according to the angle\n        pop();\n    }\n    function drawText() {\n        // draws the texts on the screen\n        push();\n        if (iDistance > 40) {\n            noObject = \"Out of Range\";\n        } else {\n            noObject = \"In Range\";\n        }\n        fill(0, 0, 0);\n        noStroke();\n        rect(0, height - height * 0.0648, width, height);\n        fill(98, 245, 31);\n        textSize(25);\n        text(\"10cm\", width - width * 0.3854, height - height * 0.0833);\n        text(\"20cm\", width - width * 0.281, height - height * 0.0833);\n        text(\"30cm\", width - width * 0.177, height - height * 0.0833);\n        text(\"40cm\", width - width * 0.0729, height - height * 0.0833);\n        textSize(40);\n        text(\"Mahdi \", width - width * 0.875, height - height * 0.0277);\n        text(\n            \"Angle: \" + iAngle + \" °\",\n            width - width * 0.48,\n            height - height * 0.0277\n        );\n        text(\"Distance: \", width - width * 0.26, height - height * 0.0277);\n        if (iDistance < 40) {\n            text(\n                \"            \" + iDistance + \" cm\",\n                width - width * 0.225,\n                height - height * 0.0277\n            );\n        }\n        textSize(25);\n        fill(98, 245, 60);\n        translate(\n            width - width * 0.4994 + (width / 2) * cos(radians(30)),\n            height - height * 0.0907 - (width / 2) * sin(radians(30))\n        );\n        rotate(-radians(-60));\n        text(\"30°\", 0, 0);\n        resetMatrix();\n        translate(\n            width - width * 0.503 + (width / 2) * cos(radians(60)),\n            height - height * 0.0888 - (width / 2) * sin(radians(60))\n        );\n        rotate(-radians(-30));\n        text(\"60°\", 0, 0);\n        resetMatrix();\n        translate(\n            width - width * 0.507 + (width / 2) * cos(radians(90)),\n            height - height * 0.0833 - (width / 2) * sin(radians(90))\n        );\n        rotate(radians(0));\n        text(\"90°\", 0, 0);\n        resetMatrix();\n        translate(\n            width - width * 0.513 + (width / 2) * cos(radians(120)),\n            height - height * 0.07129 - (width / 2) * sin(radians(120))\n        );\n        rotate(radians(-30));\n        text(\"120°\", 0, 0);\n        resetMatrix();\n        translate(\n            width - width * 0.5104 + (width / 2) * cos(radians(150)),\n            height - height * 0.0574 - (width / 2) * sin(radians(150))\n        );\n        rotate(radians(-60));\n        text(\"150°\", 0, 0);\n        pop();\n        }\n    </script>\n</body>\n</html>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "radar",
+        "x": 760,
+        "y": 440,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e5656aeb865e8e2b",
+        "type": "mqtt in",
+        "z": "9204a9298c21da12",
+        "name": "",
+        "topic": "radar",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "38e6050e6f7a6847",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 370,
+        "y": 440,
+        "wires": [
+            [
+                "b2eeea2da43fabcd",
+                "5a40b074ab729ef2"
+            ]
+        ]
+    },
+    {
+        "id": "b2eeea2da43fabcd",
+        "type": "function",
+        "z": "9204a9298c21da12",
+        "name": "function 6",
+        "func": "let [angle, distance]= msg.payload.split(',');\ndistance = distance.replace('.', '');;\n// Convert angle and distance to integers\nmsg.angle = parseInt(angle, 10);\nmsg.distance = parseInt(distance, 10);\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 560,
+        "y": 440,
+        "wires": [
+            [
+                "e021315b8a84714e",
+                "8e7b2daa51c6c74c",
+                "8fc2f061fdf33610",
+                "b349f326c6a3d779"
+            ]
+        ]
+    },
+    {
+        "id": "e021315b8a84714e",
+        "type": "debug",
+        "z": "9204a9298c21da12",
+        "name": "debug 17",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "distance",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 780,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "5a40b074ab729ef2",
+        "type": "debug",
+        "z": "9204a9298c21da12",
+        "name": "debug 19",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 680,
+        "y": 720,
+        "wires": []
+    },
+    {
+        "id": "8e7b2daa51c6c74c",
+        "type": "debug",
+        "z": "9204a9298c21da12",
+        "name": "debug 18",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "angle",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 780,
+        "y": 680,
+        "wires": []
+    },
+    {
+        "id": "38699ebc7c9e3f80",
+        "type": "mqtt in",
+        "z": "9204a9298c21da12",
+        "name": "",
+        "topic": "radar/SahpeLength",
+        "qos": "1",
+        "datatype": "auto-detect",
+        "broker": "38e6050e6f7a6847",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 390,
+        "y": 380,
+        "wires": [
+            [
+                "ef6bb99ce6deccd5"
+            ]
+        ]
+    },
+    {
+        "id": "ef6bb99ce6deccd5",
+        "type": "ui_text",
+        "z": "9204a9298c21da12",
+        "group": "96bce99e1c099c7a",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "the length of shape is",
+        "format": "{{msg.payload}}",
+        "layout": "row-left",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#000000",
+        "x": 800,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "b9711821f1c3bb49",
+        "type": "ui_audio",
+        "z": "9204a9298c21da12",
+        "name": "",
+        "group": "96bce99e1c099c7a",
+        "voice": "Microsoft Mark - English (United States)",
+        "always": true,
+        "x": 1000,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "b349f326c6a3d779",
+        "type": "function",
+        "z": "9204a9298c21da12",
+        "name": "function 10",
+        "func": "if (msg.distance < 10) {\n  msg.payload = 'alert';\n  return msg;\n}",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 810,
+        "y": 540,
+        "wires": [
+            [
+                "b9711821f1c3bb49"
+            ]
+        ]
+    },
+    {
+        "id": "96bce99e1c099c7a",
+        "type": "ui_group",
+        "name": "Group 1",
+        "tab": "9ccccb529758807f",
+        "order": 1,
+        "disp": true,
+        "width": "30",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "38e6050e6f7a6847",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "broker.hivemq.com",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "9ccccb529758807f",
+        "type": "ui_tab",
+        "name": "RADAR",
+        "icon": "dashboard",
+        "order": 1,
+        "disabled": false,
+        "hidden": false
+    }
+]

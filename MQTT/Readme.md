@@ -1,0 +1,1 @@
+using MQTT protocol to publich a message on a subject and use node-red to recive the message.
