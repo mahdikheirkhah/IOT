@@ -1,0 +1,1 @@
+This is my practice and project on the internet of things course at university. During this course I used an Arduino WeMos D1R1 board. It would be better to download the code IDE and see the code through it: https://www.arduino.cc/en/software
